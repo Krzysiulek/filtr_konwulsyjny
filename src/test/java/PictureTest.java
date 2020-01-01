@@ -36,26 +36,27 @@ public class PictureTest {
     public void modify() throws Exception {
         Picture picture = new Picture(Paths.get("src/main/resources/t1.jpg").toAbsolutePath().toString());
 
-        TimeCounter timeCounter = new TimeCounter();
-
-        timeCounter.start();
         Filter filter = new Filter(picture, Kernels.PIRAMIDALNY);
         Picture picture1 = filter.modifyPicture();
-        timeCounter.stop();
 
         picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
-        System.out.println("Execution time: " + timeCounter.getTimeMilis() + " ms");
+
+        Filter filter1 = new Filter(picture1, Kernels.DOWN_ONES_5x5);
+        Picture picture2 = filter1.modifyPicture();
+
+        picture2.savePicture(Paths.get("src/main/resources/p3_1.png").toAbsolutePath().toString());
     }
 
     @Test
     public void timeTest() throws Exception {
-        final double repetitions = 20.0;
+        final double repetitions = 1000.0;
 
         Picture picture1 = null;
         Picture picture = new Picture(Paths.get("src/main/resources/t1.jpg").toAbsolutePath().toString());
         TimeCounter timeCounter = new TimeCounter();
 
         timeCounter.start();
+
         for (int i = 0; i < repetitions; i++) {
             Filter filter = new Filter(picture, Kernels.PIRAMIDALNY);
             picture1 = filter.modifyPicture();
