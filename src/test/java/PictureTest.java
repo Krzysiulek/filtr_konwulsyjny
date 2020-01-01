@@ -49,18 +49,20 @@ public class PictureTest {
 
     @Test
     public void timeTest() throws Exception {
-        final double repetitions = 1000.0;
-
+        final double repetitions = 10;
         Picture picture1 = null;
+
         Picture picture = new Picture(Paths.get("src/main/resources/t1.jpg").toAbsolutePath().toString());
         TimeCounter timeCounter = new TimeCounter();
 
         timeCounter.start();
 
         for (int i = 0; i < repetitions; i++) {
-            Filter filter = new Filter(picture, Kernels.PIRAMIDALNY);
-            picture1 = filter.modifyPicture();
+            Filter filter = new Filter(picture, Kernels.EAST_GRADIENT);
+            picture1 = filter.modifyPictureUsingThreads(1000);
         }
+        
+
         timeCounter.stop();
 
         picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());

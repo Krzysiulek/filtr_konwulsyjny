@@ -2,10 +2,49 @@ import Constants.Kernels;
 import Models.Pixel;
 import lombok.AllArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 public class Filter {
     private Picture picture;
     private Kernels kernel;
+
+    public Picture modifyPictureUsingThreads(int threadAmount) throws InterruptedException {
+        List<Thread> threads = new ArrayList<>();
+
+        while (picture.getWidth() % threadAmount != 0) {
+            threadAmount--;
+        }
+        System.out.println("Running " + threadAmount + " threads");
+
+        Picture newPicture = new Picture(picture);
+        newPicture.setAllPixelsToZero();
+
+        for (int thr = 0; thr < threadAmount; thr++) {
+            int height = (picture.getImageArray().length / threadAmount);
+            int width = (picture.getImageArray()[0].length / threadAmount);
+
+            int finalThr = thr;
+            Thread thread = new Thread(() -> {
+                for (int widthN = finalThr * width; (widthN < (finalThr + 1) * width); widthN++) {
+                    for (int heightM = 0; heightM < picture.getHeight(); heightM++) {
+                        Pixel pixel = useKernelOnPixel(heightM, widthN);
+                        newPicture.setPixel(heightM, widthN, pixel);
+                    }
+                }
+            });
+
+            thread.start();
+            threads.add(thread);
+        }
+
+        for (Thread thread : threads) {
+            thread.join();
+        }
+
+        return newPicture;
+    }
 
     public Picture modifyPicture() {
         Picture newPicture = new Picture(picture);
