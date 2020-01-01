@@ -1,5 +1,6 @@
 import Constants.Kernels;
 import Models.Pixel;
+import Utils.TimeCounter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class PictureTest {
 
         Assert.assertEquals(width, picture.getWidth());
         Assert.assertEquals(height, picture.getHeight());
-        Pixel pixel  =  picture.getPixelWithoutException(0, 0);
+        Pixel pixel = picture.getPixelWithoutException(0, 0);
 
         pixel.setRed(100);
         pixel.setGreen(100);
@@ -35,15 +36,14 @@ public class PictureTest {
     public void modify() throws Exception {
         Picture picture = new Picture(Paths.get("src/main/resources/t1.jpg").toAbsolutePath().toString());
 
+        TimeCounter timeCounter = new TimeCounter();
+
+        timeCounter.start();
         Filter filter = new Filter(picture, Kernels.PIRAMIDALNY);
         Picture picture1 = filter.modifyPicture();
+        timeCounter.stop();
 
         picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
-
-        Filter filter1 = new Filter(picture1, Kernels.DOWN_ONES_5x5);
-        Picture picture2 = filter1.modifyPicture();
-
-        picture2.savePicture(Paths.get("src/main/resources/p3_1.png").toAbsolutePath().toString());
-
+        System.out.println("Execution time: " + timeCounter.getTimeMilis() + " ms");
     }
 }
