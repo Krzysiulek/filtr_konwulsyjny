@@ -48,24 +48,50 @@ public class PictureTest {
     }
 
     @Test
-    public void timeTest() throws Exception {
-        final double repetitions = 1;
+    public void timeTestThreads() throws Exception {
+        final double repetitions = 100;
         Picture picture1 = null;
 
-        Picture picture = new Picture(Paths.get("src/main/resources/sob.png").toAbsolutePath().toString());
+        Picture picture = new Picture(Paths.get("src/main/resources/big_cat.jpg").toAbsolutePath().toString());
         TimeCounter timeCounter = new TimeCounter();
 
         timeCounter.start();
 
         for (int i = 0; i < repetitions; i++) {
             Filter filter = new Filter(picture, Kernels.SOBEL);
-            picture1 = filter.modifyPictureUsingThreads(1000);
+            picture1 = filter.modifyPictureUsingThreads(3);
         }
         
 
         timeCounter.stop();
 
         picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
-        System.out.println("Execution time: " + timeCounter.getTimeMilis() * 1.0 / repetitions + " ms");
+        System.out.println("Execution time multiple: " + timeCounter.getTimeMilis() * 1.0 / repetitions + " ms");
+    }
+
+    @Test
+    public void timeTest() throws Exception {
+        final double repetitions = 10;
+        Picture picture1 = null;
+
+        System.out.println("XD");
+        Picture picture = new Picture(Paths.get("src/main/resources/big_cat.jpg").toAbsolutePath().toString());
+        System.out.println("XD2");
+
+        TimeCounter timeCounter = new TimeCounter();
+
+        timeCounter.start();
+
+        for (int i = 0; i < repetitions; i++) {
+            System.out.println(i);
+            Filter filter = new Filter(picture, Kernels.SOBEL);
+            picture1 = filter.modifyPicture();
+        }
+
+
+        timeCounter.stop();
+
+        picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
+        System.out.println("Execution time single: " + timeCounter.getTimeMilis() * 1.0 / repetitions + " ms");
     }
 }

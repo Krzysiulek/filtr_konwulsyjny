@@ -9,6 +9,7 @@ import java.util.List;
 public class Filter {
     private Picture picture;
     private Kernels kernel;
+    private static boolean printed = false;
 
     public Picture modifyPictureUsingThreads(int maxThreadsAmount) throws InterruptedException {
         List<Thread> threads = new ArrayList<>();
@@ -16,7 +17,11 @@ public class Filter {
         while (picture.getWidth() % maxThreadsAmount != 0) {
             maxThreadsAmount--;
         }
-        System.out.println("Running " + maxThreadsAmount + " threads");
+
+        if (!printed) {
+            System.out.println("Running " + maxThreadsAmount + " threads");
+            printed = true;
+        }
 
         Picture newPicture = new Picture(picture);
         newPicture.setAllPixelsToZero();
