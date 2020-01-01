@@ -31,11 +31,20 @@ public class Filter {
             for (int kernelHight = -1; kernelHight < kernel.getFilter()[kernelWidth + 1].length - 1; kernelHight++) {
                 int kernelValue = kernel.getFilter()[kernelWidth + 1][kernelHight + 1];
 
-                sumRed += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getRed() * kernelValue;
-                sumBlue += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getBlue() * kernelValue;
-                sumGreen += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getGreen() * kernelValue;
+                if (kernelValue == 1) {
+                    sumRed += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getRed();
+                    sumBlue += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getBlue();
+                    sumGreen += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getGreen();
 
-                ctr += kernelValue;
+                    ctr += kernelValue;
+                }
+                else if (kernelValue != 0) {
+                    sumRed += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getRed() * kernelValue;
+                    sumBlue += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getBlue() * kernelValue;
+                    sumGreen += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getGreen() * kernelValue;
+
+                    ctr += kernelValue;
+                }
             }
         }
 
@@ -43,6 +52,5 @@ public class Filter {
             return new Pixel(255, sumRed / ctr, sumGreen / ctr, sumBlue / ctr, 0);
         else
             return new Pixel(255, sumRed, sumGreen, sumBlue, 0);
-
     }
 }
