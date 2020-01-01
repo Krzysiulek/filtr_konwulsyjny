@@ -10,20 +10,20 @@ public class Filter {
     private Picture picture;
     private Kernels kernel;
 
-    public Picture modifyPictureUsingThreads(int threadAmount) throws InterruptedException {
+    public Picture modifyPictureUsingThreads(int maxThreadsAmount) throws InterruptedException {
         List<Thread> threads = new ArrayList<>();
 
-        while (picture.getWidth() % threadAmount != 0) {
-            threadAmount--;
+        while (picture.getWidth() % maxThreadsAmount != 0) {
+            maxThreadsAmount--;
         }
-        System.out.println("Running " + threadAmount + " threads");
+        System.out.println("Running " + maxThreadsAmount + " threads");
 
         Picture newPicture = new Picture(picture);
         newPicture.setAllPixelsToZero();
 
-        for (int thr = 0; thr < threadAmount; thr++) {
-            int height = (picture.getImageArray().length / threadAmount);
-            int width = (picture.getImageArray()[0].length / threadAmount);
+        for (int thr = 0; thr < maxThreadsAmount; thr++) {
+            int height = (picture.getImageArray().length / maxThreadsAmount);
+            int width = (picture.getImageArray()[0].length / maxThreadsAmount);
 
             int finalThr = thr;
             Thread thread = new Thread(() -> {
@@ -71,16 +71,18 @@ public class Filter {
                 int kernelValue = kernel.getFilter()[kernelWidth + 1][kernelHight + 1];
 
                 if (kernelValue == 1) {
-                    sumRed += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getRed();
-                    sumBlue += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getBlue();
-                    sumGreen += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getGreen();
+                    Pixel pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
+                    sumRed += pixel.getRed();
+                    sumBlue += pixel.getBlue();
+                    sumGreen += pixel.getGreen();
 
                     ctr += kernelValue;
                 }
                 else if (kernelValue != 0) {
-                    sumRed += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getRed() * kernelValue;
-                    sumBlue += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getBlue() * kernelValue;
-                    sumGreen += picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth).getGreen() * kernelValue;
+                    Pixel pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
+                    sumRed += pixel.getRed();
+                    sumBlue += pixel.getBlue();
+                    sumGreen += pixel.getGreen();
 
                     ctr += kernelValue;
                 }

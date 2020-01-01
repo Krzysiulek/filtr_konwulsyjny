@@ -34,7 +34,7 @@ public class PictureTest {
 
     @Test
     public void modify() throws Exception {
-        Picture picture = new Picture(Paths.get("src/main/resources/t1.jpg").toAbsolutePath().toString());
+        Picture picture = new Picture(Paths.get("src/main/resources/t2.jpg").toAbsolutePath().toString());
 
         Filter filter = new Filter(picture, Kernels.PIRAMIDALNY);
         Picture picture1 = filter.modifyPicture();
@@ -49,16 +49,16 @@ public class PictureTest {
 
     @Test
     public void timeTest() throws Exception {
-        final double repetitions = 10;
+        final double repetitions = 1;
         Picture picture1 = null;
 
-        Picture picture = new Picture(Paths.get("src/main/resources/t1.jpg").toAbsolutePath().toString());
+        Picture picture = new Picture(Paths.get("src/main/resources/sob.png").toAbsolutePath().toString());
         TimeCounter timeCounter = new TimeCounter();
 
         timeCounter.start();
 
         for (int i = 0; i < repetitions; i++) {
-            Filter filter = new Filter(picture, Kernels.EAST_GRADIENT);
+            Filter filter = new Filter(picture, Kernels.SOBEL);
             picture1 = filter.modifyPictureUsingThreads(1000);
         }
         
