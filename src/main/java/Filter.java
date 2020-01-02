@@ -85,9 +85,9 @@ public class Filter {
                 }
                 else if (kernelValue != 0) {
                     Pixel pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
-                    sumRed += pixel.getRed();
-                    sumBlue += pixel.getBlue();
-                    sumGreen += pixel.getGreen();
+                    sumRed += pixel.getRed() * kernelValue;
+                    sumBlue += pixel.getBlue() * kernelValue;
+                    sumGreen += pixel.getGreen() * kernelValue;
 
                     ctr += kernelValue;
                 }
