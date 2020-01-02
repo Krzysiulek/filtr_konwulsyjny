@@ -2,6 +2,7 @@ import Constants.Kernels;
 import Models.Pixel;
 import lombok.AllArgsConstructor;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +28,14 @@ public class Filter {
         newPicture.setAllPixelsToZero();
 
         for (int thr = 0; thr < maxThreadsAmount; thr++) {
-            int height = (picture.getImageArray().length / maxThreadsAmount);
-            int width = (picture.getImageArray()[0].length / maxThreadsAmount);
+            int height = (picture.getHeight() / maxThreadsAmount);
+            int width = (picture.getWidth() / maxThreadsAmount);
 
             int finalThr = thr;
             Thread thread = new Thread(() -> {
                 for (int widthN = finalThr * width; (widthN < (finalThr + 1) * width); widthN++) {
                     for (int heightM = 0; heightM < picture.getHeight(); heightM++) {
-                        Pixel pixel = useKernelOnPixel(heightM, widthN);
+                        Color pixel = useKernelOnPixel(heightM, widthN);
                         newPicture.setPixel(heightM, widthN, pixel);
                     }
                 }
@@ -57,15 +58,20 @@ public class Filter {
 
         for (int widthN = 0; widthN < picture.getWidth(); widthN++) {
             for (int heightM = 0; heightM < picture.getHeight(); heightM++) {
-                Pixel pixel = useKernelOnPixel(heightM, widthN);
-                newPicture.setPixel(heightM, widthN, pixel);
+                Color pixel = useKernelOnPixel(heightM, widthN);
+                try {
+                    newPicture.setPixel(heightM, widthN, pixel);
+                }
+                catch (Exception e){
+                    System.out.println(pixel);
+                }
             }
         }
 
         return newPicture;
     }
 
-    private Pixel useKernelOnPixel(int heightM, int widthN) {
+    private Color useKernelOnPixel(int heightM, int widthN) {
         int ctr = 0;
         int sumRed = 0;
         int sumGreen = 0;
@@ -76,27 +82,27 @@ public class Filter {
                 int kernelValue = kernel.getFilter()[kernelWidth + 1][kernelHight + 1];
 
                 if (kernelValue == 1) {
-                    Pixel pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
+                    Color pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
                     sumRed += pixel.getRed();
-                    sumBlue += pixel.getBlue();
-                    sumGreen += pixel.getGreen();
-
                     ctr += kernelValue;
                 }
                 else if (kernelValue != 0) {
-                    Pixel pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
+                    Color pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
                     sumRed += pixel.getRed();
-                    sumBlue += pixel.getBlue();
-                    sumGreen += pixel.getGreen();
-
                     ctr += kernelValue;
                 }
             }
         }
 
+            sumRed = sumRed % 255;
+            sumBlue = sumRed;
+            sumGreen = sumRed;
+
         if (ctr != 0)
-            return new Pixel(255, sumRed / ctr, sumGreen / ctr, sumBlue / ctr, 0);
-        else
-            return new Pixel(255, sumRed, sumGreen, sumBlue, 0);
+            return new Color(sumRed / ctr, sumGreen / ctr, sumBlue / ctr);
+        else {
+            return new Color(sumRed, sumGreen, sumBlue);
+        }
+
     }
 }
