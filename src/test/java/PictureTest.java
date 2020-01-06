@@ -19,7 +19,7 @@ public class PictureTest {
 
         Assert.assertEquals(width, picture.getWidth());
         Assert.assertEquals(height, picture.getHeight());
-        Color pixel = picture.getPixelWithoutException(0, 0);
+        int pixel = picture.getPixelWithoutException(0, 0);
 
 //        pixel.setRed(100);
 //        pixel.setGreen(100);
@@ -58,13 +58,13 @@ public class PictureTest {
 
         for (int i = 0; i < repetitions; i++) {
             Filter filter = new Filter(picture, Kernels.SOBEL);
-            picture1 = filter.modifyPictureUsingThreads(3);
+//            picture1 = filter.modifyPictureUsingThreads(3);
         }
         
 
         timeCounter.stop();
 
-        picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
+//        picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
         System.out.println("Execution time multiple: " + timeCounter.getTimeMilis() * 1.0 / repetitions + " ms");
     }
 
@@ -90,7 +90,7 @@ public class PictureTest {
 
         timeCounter.stop();
 
-        picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
+//        picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
         System.out.println("Execution time single: " + timeCounter.getTimeMilis() * 1.0 / repetitions + " ms");
     }
 }

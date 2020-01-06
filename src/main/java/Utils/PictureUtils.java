@@ -20,4 +20,18 @@ public class PictureUtils {
 
         return result;
     }
+
+    public static int[][] convertTo2DToints(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int[][] tmp = new int[height][width];
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                tmp[i][j] = image.getRGB(j, i);
+            }
+        }
+
+        return tmp;
+    }
 }

@@ -1,55 +1,91 @@
 import Constants.Kernels;
-import Models.Pixel;
-import lombok.AllArgsConstructor;
+import Models.Params;
+import lombok.Getter;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-@AllArgsConstructor
 public class Filter {
     private Picture picture;
     private Kernels kernel;
     private static boolean printed = false;
+    @Getter
+    private int maxThreadsAmount;
+    int[][] tmpPicture;
 
-    public Picture modifyPictureUsingThreads(int maxThreadsAmount) throws InterruptedException {
+    List<Params> paramsList = new ArrayList<>();
+
+//    private int ctr;
+
+    public Filter(Picture picture, Kernels kernel) {
+        this.picture = picture;
+        this.kernel = kernel;
+    }
+
+    public int[][] modifyPictureUsingThreads(int maxThreadsAmount) throws InterruptedException {
         List<Thread> threads = new ArrayList<>();
-
-        while (picture.getWidth() % maxThreadsAmount != 0) {
-            maxThreadsAmount--;
-        }
+        this.maxThreadsAmount = maxThreadsAmount;
 
         if (!printed) {
             System.out.println("Running " + maxThreadsAmount + " threads");
             printed = true;
         }
 
-        Picture newPicture = new Picture(picture);
-        newPicture.setAllPixelsToZero();
+        int pieces = maxThreadsAmount * 4;
 
-        for (int thr = 0; thr < maxThreadsAmount; thr++) {
-            int height = (picture.getHeight() / maxThreadsAmount);
-            int width = (picture.getWidth() / maxThreadsAmount);
+        int incrementWidthBy = picture.getWidth() / pieces;
+        int incrementHeightBy = picture.getHeight() / pieces;
 
-            int finalThr = thr;
-            Thread thread = new Thread(() -> {
-                for (int widthN = finalThr * width; (widthN < (finalThr + 1) * width); widthN++) {
-                    for (int heightM = 0; heightM < picture.getHeight(); heightM++) {
-                        Color pixel = useKernelOnPixel(heightM, widthN);
-                        newPicture.setPixel(heightM, widthN, pixel);
+        for (int i = 0; i < picture.getWidth(); i+= incrementWidthBy) {
+            for (int j = 0; j < picture.getHeight(); j += incrementHeightBy) {
+                int startWidth = i;
+                int endWidth = i + incrementWidthBy;
+                int startHeight = j;
+                int endHeight = j + incrementHeightBy;
+
+                paramsList.add(new Params(startHeight, endHeight, startWidth, endWidth));
+
+            }
+        }
+        tmpPicture = new int[picture.getHeight()][picture.getWidth()];
+
+        for (int i = 0; i < maxThreadsAmount; i++) {
+            Thread t = new Thread(() -> {
+                while (!paramsList.isEmpty()) {
+                    Params params;
+                    try {
+                        params = paramsList.get(0);
+                        paramsList.remove(0);
+
+                        for (int hei = params.getHeightStart(); hei < params.getHeightEnd() - 1; hei++) {
+                            for (int wid = params.getWidthStart(); wid < params.getWidthEnd() - 1; wid++) {
+                                if (hei > picture.getHeight() - 1 || wid > picture.getWidth() - 1) {
+                                    continue;
+                                }
+
+                                Color c = useKernelOnPixel(hei, wid);
+                                tmpPicture[hei][wid] = c.getRed();
+                            }
+                        }
+                    }
+                    catch (Exception e) {
+//                        break;
                     }
                 }
+
             });
 
-            thread.start();
-            threads.add(thread);
+            t.start();
+            threads.add(t);
         }
 
-        for (Thread thread : threads) {
-            thread.join();
+        for (Thread t : threads) {
+            t.join();
         }
 
-        return newPicture;
+        return tmpPicture;
     }
 
     public Picture modifyPicture() {
@@ -72,37 +108,36 @@ public class Filter {
     }
 
     private Color useKernelOnPixel(int heightM, int widthN) {
+        int sum = 0;
         int ctr = 0;
-        int sumRed = 0;
-        int sumGreen = 0;
-        int sumBlue = 0;
 
         for (int kernelWidth = -1; kernelWidth < kernel.getFilter().length - 1; kernelWidth++) {
             for (int kernelHight = -1; kernelHight < kernel.getFilter()[kernelWidth + 1].length - 1; kernelHight++) {
                 int kernelValue = kernel.getFilter()[kernelWidth + 1][kernelHight + 1];
 
                 if (kernelValue == 1) {
-                    Color pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
-                    sumRed += pixel.getRed();
+//                    Color pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
+                    int pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
+                    sum += pixel;
                     ctr += kernelValue;
                 }
                 else if (kernelValue != 0) {
-                    Color pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
-                    sumRed += pixel.getRed();
+                    int pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
+//                    Color pixel = picture.getPixelWithoutException(heightM + kernelHight, widthN + kernelWidth);
+                    sum += pixel * kernelValue;
                     ctr += kernelValue;
                 }
             }
         }
 
-            sumRed = sumRed % 255;
-            sumBlue = sumRed;
-            sumGreen = sumRed;
+        sum = Math.abs(sum % 255);
 
-        if (ctr != 0)
-            return new Color(sumRed / ctr, sumGreen / ctr, sumBlue / ctr);
-        else {
-            return new Color(sumRed, sumGreen, sumBlue);
+        if (ctr != 0) {
+            int val = sum / ctr;
+            return new Color(val, val, val);
         }
-
+        else {
+            return new Color(sum, sum, sum);
+        }
     }
 }
