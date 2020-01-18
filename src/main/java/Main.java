@@ -6,69 +6,40 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
-    static Map<Integer, Long> times = new HashMap<>();
-    static Picture picture;
+    private static Map<Integer, Long> times = new HashMap<>();
+    private static Picture picture;
 
     public static void main(String[] args) throws Exception {
-        String filePath = "src/main/resources/bp1.jpg";
+        String filePath = "src/main/resources/wilcz_bl_aussie.png";
         picture = new Picture(Paths.get(filePath).toAbsolutePath().toString());
 
-        for (int i = 1; i < 20; i+= 2) {
-//        for (int i = 1; i < picture.getWidth(); i++) {
+        for (int i = 1; i < 6; i++) {
             System.out.print("#" + i + " : ");
-            runWithThreads(i, 10);
-
-//            while (picture.getWidth() % i != 0) {
-//                i++;
-//            }
+            runWithThreads(i, 30);
         }
 
         times
                 .forEach((k,v) -> System.out.println("#" + k + ":" + v + " ms. Przyspieszenie: " + times.get(1) * 1.0 / v * 1.0));
+
     }
 
     private static void runWithThreads(int threads, int repetitions) throws Exception {
         int[][] picture1 = new int[0][];
         int threadsTmp = 0;
         TimeCounter timeCounter = new TimeCounter();
+        Filter filter = new Filter(picture, Kernels.WYOSTRZAJACY_1);
 
         timeCounter.start();
 
         for (int i = 0; i < repetitions; i++) {
-            Filter filter = new Filter(picture, Kernels.EDGE_DETECTION_4);
             picture1 = filter.modifyPictureUsingThreads(threads);
-            threadsTmp = filter.getMaxThreadsAmount();
+            threadsTmp = filter.maxThreadsAmount;
         }
-
 
         timeCounter.stop();
         System.out.println(timeCounter.getTimeMilis() / repetitions);
 
-//        Picture.savePicture(picture1, "src/main/resources/p4_2.png");
+        Picture.savePicture(picture1, "src/main/resources/p4_2.png");
         times.put(threadsTmp, timeCounter.getTimeMilis());
-    }
-
-    private static void runWithoutThreads() throws Exception {
-        final int repetitions = 50;
-        Picture picture1 = null;
-
-        System.out.println("XD");
-        Picture picture = new Picture(Paths.get("src/main/resources/cat.jpeg").toAbsolutePath().toString());
-        System.out.println("XD2");
-
-        TimeCounter timeCounter = new TimeCounter();
-
-        timeCounter.start();
-
-        for (int i = 0; i < repetitions; i++) {
-            Filter filter = new Filter(picture, Kernels.EDGE_DETECTION_4);
-            picture1 = filter.modifyPicture();
-        }
-
-
-        timeCounter.stop();
-
-        picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
-        System.out.println("Time: " + (timeCounter.getTimeMilis() * 1.0 / repetitions) + " ms without threads");
     }
 }

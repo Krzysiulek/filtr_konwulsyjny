@@ -1,6 +1,4 @@
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 public class TimeCounter {
     private long startTimeMilis;
     private long stopTimeMilis;

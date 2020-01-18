@@ -1,8 +1,4 @@
-import Models.Pixel;
 import Utils.PictureUtils;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -12,21 +8,14 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 
-@NoArgsConstructor
-@AllArgsConstructor
 public class Picture {
-    @Getter
-//    private BufferedImage image;
-    private int[][] image;
 
-    @Getter
-    private int width;
-    @Getter
-    private int height;
+    public int[][] image;
+
+    public int width;
+    public int height;
 
     public Picture(Picture picture) {
-//        this.image = deepCopy(picture.image);
-
         this.width = picture.width;
         this.height = picture.height;
     }
@@ -40,9 +29,6 @@ public class Picture {
         width = hugeImage.getWidth();
         height = hugeImage.getHeight();
 
-//        image = hugeImage;
-
-//        PictureUtils.convertTo2DUsingGetRGB(hugeImage);
         image = PictureUtils.convertTo2DToints(hugeImage);
     }
 
@@ -93,7 +79,7 @@ public class Picture {
         else if (widthN < 0)
             widthN = 0;
 
-//        return new Color(image[heightN][widthN]);
+
         return image[heightN][widthN];
     }
 
@@ -112,7 +98,9 @@ public class Picture {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                int rgb = new Color(pic[i][j]).getRGB();
+
+                int val = pic[i][j];
+                int rgb = new Color(val, val, val).getRGB();
                 bufferedImage.setRGB(j, i, rgb);
             }
         }

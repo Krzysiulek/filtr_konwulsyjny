@@ -1,17 +1,14 @@
 package Models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.awt.*;
 
-@Data
-@AllArgsConstructor
+
 public class Pixel {
-    private int red;
-    private int green;
-    private int blue;
-    private int pixelValue;
+    public int red;
+    public int green;
+    public int blue;
+    public int pixelValue;
 
     public Pixel(int pixelValue) {
         Color c = new Color(pixelValue);

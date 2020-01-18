@@ -1,10 +1,5 @@
 package Constants;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public enum Kernels {
     DEFAULT(new int[][]{
             {2, 2, 2},
@@ -149,4 +144,12 @@ public enum Kernels {
     });
 
     private int[][] filter;
+
+    Kernels(int[][] filter) {
+        this.filter = filter;
+    }
+
+    public int[][] getFilter() {
+        return filter;
+    }
 }

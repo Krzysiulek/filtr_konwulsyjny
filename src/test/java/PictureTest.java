@@ -17,8 +17,8 @@ public class PictureTest {
 
         Picture picture = new Picture(Paths.get("src/main/resources/p1.png").toAbsolutePath().toString());
 
-        Assert.assertEquals(width, picture.getWidth());
-        Assert.assertEquals(height, picture.getHeight());
+        Assert.assertEquals(width, picture.width);
+        Assert.assertEquals(height, picture.height);
         int pixel = picture.getPixelWithoutException(0, 0);
 
 //        pixel.setRed(100);
@@ -33,17 +33,7 @@ public class PictureTest {
 
     @Test
     public void modify() throws Exception {
-        Picture picture = new Picture(Paths.get("src/main/resources/t2.jpg").toAbsolutePath().toString());
-
-        Filter filter = new Filter(picture, Kernels.PIRAMIDALNY);
-        Picture picture1 = filter.modifyPicture();
-
-        picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
-
-        Filter filter1 = new Filter(picture1, Kernels.DOWN_ONES_5x5);
-        Picture picture2 = filter1.modifyPicture();
-
-        picture2.savePicture(Paths.get("src/main/resources/p3_1.png").toAbsolutePath().toString());
+//
     }
 
     @Test
@@ -84,7 +74,6 @@ public class PictureTest {
         for (int i = 0; i < repetitions; i++) {
             System.out.println(i);
             Filter filter = new Filter(picture, Kernels.SOBEL);
-            picture1 = filter.modifyPicture();
         }
 
 
