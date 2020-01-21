@@ -10,13 +10,13 @@ public class Main {
     static Picture picture;
 
     public static void main(String[] args) throws Exception {
-        String filePath = "src/main/resources/bp1.jpg";
+        String filePath = "src/main/resources/fhd.jpg";
         picture = new Picture(Paths.get(filePath).toAbsolutePath().toString());
 
-        for (int i = 1; i < 20; i+= 2) {
+        for (int i = 1; i < 9; i+= 2) {
 //        for (int i = 1; i < picture.getWidth(); i++) {
             System.out.print("#" + i + " : ");
-            runWithThreads(i, 10);
+            runWithThreads(i, 500);
 
 //            while (picture.getWidth() % i != 0) {
 //                i++;
