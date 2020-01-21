@@ -49,10 +49,10 @@ public class PictureTest {
 
     @Test
     public void timeTest() throws Exception {
-        final double repetitions = 1000.0;
+        final double repetitions = 50.0;
 
         Picture picture1 = null;
-        Picture picture = new Picture(Paths.get("src/main/resources/t1.jpg").toAbsolutePath().toString());
+        Picture picture = new Picture(Paths.get("src/main/resources/fhd.jpg").toAbsolutePath().toString());
         TimeCounter timeCounter = new TimeCounter();
 
         timeCounter.start();
