@@ -16,7 +16,7 @@ public class Filter {
         while (picture.getWidth() % maxThreadsAmount != 0) {
             maxThreadsAmount--;
         }
-        System.out.println("Running " + maxThreadsAmount + " threads");
+//        System.out.println("Running " + maxThreadsAmount + " threads");
 
         Picture newPicture = new Picture(picture);
         newPicture.setAllPixelsToZero();

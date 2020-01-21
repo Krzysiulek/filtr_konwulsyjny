@@ -47,25 +47,33 @@ public class PictureTest {
         picture2.savePicture(Paths.get("src/main/resources/p3_1.png").toAbsolutePath().toString());
     }
 
-    @Test
-    public void timeTest() throws Exception {
-        final double repetitions = 1;
+//    @Test
+    public void timeTest(int k) throws Exception {
+        final double repetitions = 500;
         Picture picture1 = null;
 
-        Picture picture = new Picture(Paths.get("src/main/resources/sob.png").toAbsolutePath().toString());
+        Picture picture = new Picture(Paths.get("src/main/resources/fhd.jpg").toAbsolutePath().toString());
         TimeCounter timeCounter = new TimeCounter();
 
         timeCounter.start();
 
         for (int i = 0; i < repetitions; i++) {
             Filter filter = new Filter(picture, Kernels.SOBEL);
-            picture1 = filter.modifyPictureUsingThreads(1000);
+            picture1 = filter.modifyPictureUsingThreads(5);
         }
-        
+
 
         timeCounter.stop();
 
         picture1.savePicture(Paths.get("src/main/resources/p3.png").toAbsolutePath().toString());
         System.out.println("Execution time: " + timeCounter.getTimeMilis() * 1.0 / repetitions + " ms");
+    }
+
+    @Test
+    public void xd() throws Exception {
+        for (int i = 1; i < 10; i++) {
+            System.out.print(i + " : ");
+            timeTest(i);
+        }
     }
 }
