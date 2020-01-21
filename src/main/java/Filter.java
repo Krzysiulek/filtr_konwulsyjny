@@ -5,7 +5,7 @@ import java.util.HashSet;
 public class Filter {
     private Picture picture;
     private int[][] kernelArray;
-    Kernels kernel;
+    private Kernels kernel;
 
 
     public int maxThreadsAmount;
@@ -23,22 +23,18 @@ public class Filter {
         this.maxThreadsAmount = maxThreadsAmount;
 
         int incrementWidthBy = picture.width / maxThreadsAmount;
-        int incrementHeightBy = picture.height / maxThreadsAmount;
+//        int incrementHeightBy = picture.height / maxThreadsAmount;
 
         /**
          * TODO:
          *      - rodzielic
          */
         for (int i = 0; i < picture.width; i+= incrementWidthBy) {
-            for (int j = 0; j < picture.height; j += incrementHeightBy) {
-                int endWidth = i + incrementWidthBy;
-                int endHeight = j + incrementHeightBy;
-                int finalJ = j;
-                int finalI = i;
+            int endWidth = i + incrementWidthBy;
+            int finalI = i;
 
-
-                Thread t = new Thread(() -> {
-                    for (int hei = finalJ; hei < endHeight; hei++) {
+            Thread t = new Thread(() -> {
+                    for (int hei = 0; hei < picture.height; hei++) {
                         for (int wid = finalI; wid < endWidth; wid++) {
                             if (hei > picture.height - 1 || wid > picture.width - 1) {
                                 continue;
@@ -51,13 +47,13 @@ public class Filter {
 
                 t.start();
                 threads.add(t);
-            }
         }
 
         for (Thread t : threads) {
             t.join();
         }
 
+        threads = new HashSet<>();
         return tmpPicture;
     }
 

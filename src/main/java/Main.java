@@ -10,12 +10,12 @@ public class Main {
     private static Picture picture;
 
     public static void main(String[] args) throws Exception {
-        String filePath = "src/main/resources/wilcz_bl_aussie.png";
+        String filePath = "src/main/resources/fhd.jpg";
         picture = new Picture(Paths.get(filePath).toAbsolutePath().toString());
 
-        for (int i = 1; i < 6; i++) {
+        for (int i = 1; i < 5; i++) {
             System.out.print("#" + i + " : ");
-            runWithThreads(i, 30);
+            runWithThreads(i, 10);
         }
 
         times
@@ -25,7 +25,6 @@ public class Main {
 
     private static void runWithThreads(int threads, int repetitions) throws Exception {
         int[][] picture1 = new int[0][];
-        int threadsTmp = 0;
         TimeCounter timeCounter = new TimeCounter();
         Filter filter = new Filter(picture, Kernels.WYOSTRZAJACY_1);
 
@@ -33,13 +32,12 @@ public class Main {
 
         for (int i = 0; i < repetitions; i++) {
             picture1 = filter.modifyPictureUsingThreads(threads);
-            threadsTmp = filter.maxThreadsAmount;
         }
 
         timeCounter.stop();
         System.out.println(timeCounter.getTimeMilis() / repetitions);
 
-        Picture.savePicture(picture1, "src/main/resources/p4_2.png");
-        times.put(threadsTmp, timeCounter.getTimeMilis());
+//        Picture.savePicture(picture1, "src/main/resources/p4_2.png");
+        times.put(threads, timeCounter.getTimeMilis());
     }
 }
