@@ -13,9 +13,9 @@ public class Main {
         String filePath = "src/main/resources/fhd.jpg";
         picture = new Picture(Paths.get(filePath).toAbsolutePath().toString());
 
-        for (int i = 1; i < 5; i++) {
+        for (int i = 1; i < 10; i++) {
             System.out.print("#" + i + " : ");
-            runWithThreads(i, 10);
+            runWithThreads(i, 500);
         }
 
         times
